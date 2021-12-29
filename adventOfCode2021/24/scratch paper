@@ -1,0 +1,186 @@
+inp w # DIGIT 1
+x = (z%26)+13 != D1
+y = (25 * x)+1
+z = z*y
+y = D1+15 * x
+z = z + y
+
+inp w # DIGIT 2
+x = (z%26)+13 != D2
+y = (25*x)+1
+z = z*y
+y = (D2+16)*x
+z = z+y
+
+inp w # DIGIT 3
+x = (z%26)+10 != D3
+y = (25*x)+1
+z = z*y
+y = (D3+4)*x
+z = z+y
+
+inp w # DIGIT 4
+x = (z%26)+15 != D4
+y = (25*x)+1
+z = Z*y
+y = (D4+14)*x
+z = z+y
+
+inp w # DIGIT 5
+x = (z%26)-8 != D5
+z = z/26
+y = (25*x)+1
+z = z*y
+y = (D5+1)*x
+z = z + y
+
+inp w # DIGIT 6
+x = (z%26)-10 != D6
+z = z/26
+y = (25*x)+1
+z = z*y
+y = (D6 +5)*x
+z = z*y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 11
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 1
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -3
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 3
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 14
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 3
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -4
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 7
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 14
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 5
+mul y x
+add z y
+
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -5
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 13
+mul y x
+add z y
+
+inp w # DIGIT 14
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -8
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 3
+mul y x
+add z y
+
+inp w # DIGIT 14
+x = (z%26)-11 != D14
+z = z/26
+y = (25*x)+1
+z = z*y
+y = (D14+10)*x
+z = z+y
+
+51939397989999
