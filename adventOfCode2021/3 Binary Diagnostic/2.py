@@ -5,17 +5,13 @@ def getMostCommonBit(i, arr):
     ones = 0
     for bits in arr:
         if bits[i] == 0:
-            # print("adding a zero")
             zeroes += 1
         if bits[i] == 1:
-            # print("adding a one")
             ones += 1        
     
     if zeroes > ones:
-        # print("getMostCommonBit(" + str(i) + ", " + str(arr) + "): returns 0")
         return 0
     else:
-        # print("getMostCommonBit(" + str(i) + ", " + str(arr) + "): returns 1")
         return 1
 
 def getRating(isOxygen, binaries):
@@ -47,7 +43,6 @@ def main():
         binaries = []
         for line in lines:
             binaries.append([int(c) for c in line.strip()])
-        # print("binaries: " + binaries)        
         oxygen = convertArrayOfBitsToInt(getRating(True, binaries))
         co = convertArrayOfBitsToInt(getRating(False, binaries))
         print("oxygen: " + str(oxygen) + "; co2: " + str(co) + "; result: " + str(oxygen * co))
