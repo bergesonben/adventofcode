@@ -13,8 +13,6 @@ class Range:
         self.end = end
         self.isHorizontal = self.start.x == self.end.x
         self.isVertical = self.start.y == self.end.y
-        self.is45Degrees = abs(self.start.x-self.end.x) == abs(self.start.y-self.end.y)
-        # print(str(self) + ' is45Degrees: ' + str(self.is45Degrees))
         
     def getListOfCoordinates(self):
         retval = []
@@ -24,17 +22,8 @@ class Range:
         elif self.isVertical:
             for i in range(min(self.start.x, self.end.x), max(self.start.x, self.end.x)+1):
                 retval.append(Coordinate(i, self.start.y))
-        elif self.is45Degrees:
-            xDirection = -1 if self.start.x - self.end.x > 0 else 1
-            yDirection = -1 if self.start.y - self.end.y > 0 else 1
-            xList = [*range(self.start.x, self.end.x + xDirection, xDirection)]
-            yList = [*range(self.start.y, self.end.y + yDirection, yDirection)]
-            # print(str(self) + ' xList = ' + str(xList) + '; yList = ' + str(yList))
-            for x,y in zip(xList, yList):
-                retval.append(Coordinate(x, y))
         else:
-            print('getListOfCoordinates called on range that is not vertical or horizontal')
-            return
+            raise Exception('getListOfCoordinates called on range that is not vertical or horizontal')
         
         return retval
 
@@ -48,7 +37,7 @@ class Board:
         self.board = {}
 
         for myRange in ranges:
-            if myRange.isHorizontal or myRange.isVertical or myRange.is45Degrees:
+            if myRange.isHorizontal or myRange.isVertical:
                 coorList = myRange.getListOfCoordinates()
                 for coor in coorList:
                     if (coor.x, coor.y) in self.board:
