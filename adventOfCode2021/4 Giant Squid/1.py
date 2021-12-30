@@ -83,23 +83,19 @@ def getInputsAndBoards():
     return inputs, boards
 
 def main(): 
-    inputs, boards = getInputsAndBoards()
+    inputs, boards = getInputsAndBoards()    
     
+    isWon = False
     for move in inputs:
-        print("move: " + str(move))
-        for board in boards:
-            print(board)
-        markedForPopping = []
+        if isWon:
+            break
         for i, board in enumerate(boards):
             board.markSpot(move)
             if board.getIsWon():   
-                if len(boards) == 1:
-                    board.calculateScore(move)
-                    return
-                markedForPopping.append(i)
-                print("board #" + str(i+1) + " is eliminated")                                
-        for i in reversed(markedForPopping):
-            boards.pop(i)
+                board.calculateScore(move)             
+                isWon = True
+                break
+
 if __name__ == '__main__':
     sys.exit(main())
 
