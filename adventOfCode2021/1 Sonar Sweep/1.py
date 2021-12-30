@@ -1,4 +1,4 @@
-with open('day 1 input') as f:
+with open('input') as f:
     lines = f.readlines()
     prevDepth = 0
     numIncrease = -1
