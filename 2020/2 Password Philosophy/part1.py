@@ -1,6 +1,4 @@
 from itertools import combinations
-from typing import MappingView
-
 class PasswordRequirement:
     def __init__(self, minimum, maximum, letter):
         self.min = minimum

@@ -1,18 +1,25 @@
-from itertools import combinations
+class PasswordRequirement:
+    def __init__(self, pos1, pos2, letter):
+        self.pos1 = pos1-1
+        self.pos2 = pos2-1
+        self.letter = letter
+    
+    def isValid(self, password):
+        return (password[self.pos1] == self.letter) != (password[self.pos2] == self.letter)
 
 def main(input):
     with open(input) as f:
         lines = f.readlines()
 
-    lines = [int(i) for i in lines]
+    numValid = 0
+    for line in lines:
+        line = line.strip().split()
+        reqNums = line[0].split('-')
+        reqLetter = line[1].replace(':','')
+        requirement = PasswordRequirement(int(reqNums[0]), int(reqNums[1]), reqLetter)
+        password = line[2]
+        if requirement.isValid(password):
+            numValid += 1
     
-    combos = combinations(lines, 3)
-    for combo in combos:
-        if combo[0] + combo[1] + combo[2] == 2020:
-            answer = combo[0] * combo[1] * combo[2]
-            break
-    
-    if answer is None:
-        print('no answer found')
-    else:
-        print(answer)
+    print(numValid)
+
