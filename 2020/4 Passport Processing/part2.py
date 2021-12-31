@@ -1,46 +1,86 @@
-TREE = '#'
-EMPTY = '.'
-SLOPES = [(1,1),(1,3),(1,5),(1,7),(2,1)]
-ROW = 0
-COL = 1
+REQUIRED_FIELDS = {'byr','iyr','eyr','hgt','hcl','ecl','pid'}
+VALID_EYE_COLORS = {'amb','blu','brn','gry','grn','hzl','oth'}
 
-class TreeMap:
-    def __init__(self, lines):
-        self.board = []
-        row = []
-        for line in lines:
-            for c in line.strip():
-                row.append(c)
-            self.board.append(row)
-            row = []
-        self.height = len(self.board)
-        self.width = len(self.board[0])
+def isValidYear(name, value):    
+    if len(value) != 4:
+        return False
+    if name == 'byr':
+        return 1920 <= int(value) <= 2002
+    elif name == 'iyr':
+        return 2010 <= int(value) <= 2020
+    elif name == 'eyr':
+        return 2020 <= int(value) <= 2030
 
-    def pastBottom(self,pos):
-        return pos[ROW] >= self.height
-        
-    def getSpaceValue(self, pos):        
-        return self.board[pos[ROW]][pos[COL] % self.width]
+def isHGTValid(value):
+    if len(value) < 3:
+        return False
+    unit = value[-2:]
+    if unit == 'cm':
+        return 150 <= int(value[:-2]) <= 193
+    elif unit == 'in':
+        return 59 <= int(value[:-2]) <= 76
+    else:
+        return False
 
-    def isTree(self, pos):
-        return self.getSpaceValue(pos) == TREE
+def isHCLValid(value):
+    if len(value) != 7:
+        return False
+    if value[0] != '#':
+        return False
+    for c in value[1:]:
+        if not c in '0123456789abcdef':
+            return False
+    return True
 
-    def getNumTreesHit(self, slope):
-        pos = (0,0)
-        count = 0
-        while not self.pastBottom(pos):
-            if self.isTree(pos):
-                count += 1
-            pos = (pos[ROW] + slope[ROW], pos[COL] + slope[COL])
-        return count
+def isFieldValid(name, value):
+    value = value.strip() 
+    if name == 'byr' or name == 'iyr' or name == 'eyr':
+        return isValidYear(name, value)
+    elif name == 'hgt':
+        return isHGTValid(value)
+    elif name == 'hcl':
+        return isHCLValid(value)
+    elif name == 'ecl':
+        return value in VALID_EYE_COLORS
+    elif name == 'pid':
+        return len(value) == 9 and value.isnumeric()
+    elif name == 'cid':
+        return True
+    else:
+        return False
+
+def isPassportValid(fields):
+    fieldsDict = {}
+    for field in fields:
+        foo = field.split(':')
+        fieldsDict[foo[0]] = foo[1]
+
+    fieldNames = set(fieldsDict.keys())
+    if REQUIRED_FIELDS.intersection(fieldNames) != REQUIRED_FIELDS:
+        return False    
+
+    for fieldName, fieldValue in fieldsDict.items():
+        if not isFieldValid(fieldName, fieldValue):
+            return False
+    return True
 
 def main(input):
     with open(input) as f:
         lines = f.readlines()
 
-    treeMap = TreeMap(lines)
-    answer = 1
-    for slope in SLOPES:
-        answer *= treeMap.getNumTreesHit(slope)
-    print(answer)    
+    fieldsSoFar = set()
+    validCount = 0
+    for line in lines:
+        if line.isspace():
+            if isPassportValid(fieldsSoFar):
+                validCount += 1
+            fieldsSoFar = set()
+            
+        for entry in line.strip().split():
+            fieldsSoFar.add(entry)
+    
+    if isPassportValid(fieldsSoFar):
+        validCount += 1
 
+    print(validCount)
+   
