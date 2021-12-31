@@ -1,86 +1,50 @@
-REQUIRED_FIELDS = {'byr','iyr','eyr','hgt','hcl','ecl','pid'}
-VALID_EYE_COLORS = {'amb','blu','brn','gry','grn','hzl','oth'}
+from itertools import product
+MAX_ROW = 127
+MAX_COL = 7
 
-def isValidYear(name, value):    
-    if len(value) != 4:
-        return False
-    if name == 'byr':
-        return 1920 <= int(value) <= 2002
-    elif name == 'iyr':
-        return 2010 <= int(value) <= 2020
-    elif name == 'eyr':
-        return 2020 <= int(value) <= 2030
+def getPosition(boardingPass, maximum, upperLetter, lowerLetter, rangeToCheck):
+    newRange = (0,maximum)
+    for i in rangeToCheck:
+        if boardingPass[i] == upperLetter:
+            newRange = (newRange[0], ((newRange[1]+newRange[0]))//2)
+        elif boardingPass[i] == lowerLetter:
+            newRange = (((newRange[1]+newRange[0])+1)//2, newRange[1])
+        else:
+            raise Exception('Unexpect letter in boardingpass')
+    if newRange[0] != newRange[1]:
+        raise Exception('unexpected item in bagging area')
+    return newRange[0]
 
-def isHGTValid(value):
-    if len(value) < 3:
-        return False
-    unit = value[-2:]
-    if unit == 'cm':
-        return 150 <= int(value[:-2]) <= 193
-    elif unit == 'in':
-        return 59 <= int(value[:-2]) <= 76
-    else:
-        return False
+def getRow(boardingPass):
+    return getPosition(boardingPass, MAX_ROW, 'F', 'B', range(0,7))
 
-def isHCLValid(value):
-    if len(value) != 7:
-        return False
-    if value[0] != '#':
-        return False
-    for c in value[1:]:
-        if not c in '0123456789abcdef':
-            return False
-    return True
+def getCol(boardingPass):
+    return getPosition(boardingPass, MAX_COL, 'L', 'R', range(7,10))
 
-def isFieldValid(name, value):
-    value = value.strip() 
-    if name == 'byr' or name == 'iyr' or name == 'eyr':
-        return isValidYear(name, value)
-    elif name == 'hgt':
-        return isHGTValid(value)
-    elif name == 'hcl':
-        return isHCLValid(value)
-    elif name == 'ecl':
-        return value in VALID_EYE_COLORS
-    elif name == 'pid':
-        return len(value) == 9 and value.isnumeric()
-    elif name == 'cid':
-        return True
-    else:
-        return False
+def getRowAndCol(boardingPass):
+    return (getRow(boardingPass), getCol(boardingPass))
 
-def isPassportValid(fields):
-    fieldsDict = {}
-    for field in fields:
-        foo = field.split(':')
-        fieldsDict[foo[0]] = foo[1]
-
-    fieldNames = set(fieldsDict.keys())
-    if REQUIRED_FIELDS.intersection(fieldNames) != REQUIRED_FIELDS:
-        return False    
-
-    for fieldName, fieldValue in fieldsDict.items():
-        if not isFieldValid(fieldName, fieldValue):
-            return False
-    return True
+def hasFrontAndBackSeat(allSeats, seat):
+    return (seat[0]+1, seat[1]) in allSeats and (seat[0]-1, seat[1]) in allSeats
 
 def main(input):
     with open(input) as f:
         lines = f.readlines()
 
-    fieldsSoFar = set()
-    validCount = 0
+    allSeats = set()
     for line in lines:
-        if line.isspace():
-            if isPassportValid(fieldsSoFar):
-                validCount += 1
-            fieldsSoFar = set()
-            
-        for entry in line.strip().split():
-            fieldsSoFar.add(entry)
-    
-    if isPassportValid(fieldsSoFar):
-        validCount += 1
+        position = getRowAndCol(line)
+        allSeats.add(position)
 
-    print(validCount)
-   
+    allPossibleSeats = set(product(range(MAX_ROW+1), range(MAX_COL+1)))
+    missingSeats = allPossibleSeats.difference(allSeats)
+    mySeats = set()
+    for missingSeat in missingSeats:
+        if hasFrontAndBackSeat(allSeats, missingSeat):
+            mySeats.add(missingSeat)
+    if len(mySeats) != 1:
+        print('oops')
+    else:
+        mySeat = mySeats.pop()
+        print(mySeat[0]*8+mySeat[1])
+    
