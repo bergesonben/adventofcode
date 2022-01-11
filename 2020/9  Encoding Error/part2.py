@@ -1,46 +1,43 @@
-from copy import deepcopy
+from itertools import combinations
 
-def getInstructionValue(line):
-    return int(line[3:])
+def findInvalidNum(nums, preambleLen):
+    lastIndex = preambleLen    
+    while True:
+        a = combinations(nums[lastIndex-preambleLen:lastIndex], 2)        
+        isValid = False
+        for b in a:
+            if b[0] + b[1] == nums[lastIndex]:
+                lastIndex += 1
+                isValid = True
+                break
+        if not isValid:
+            break
 
-def getAllVariations(lines):
-    variations = []
-    for i, line in enumerate(lines):
-        if line[:3] == 'nop':
-            variation = deepcopy(lines)
-            variation[i] = line.replace('nop', 'jmp')
-            variations.append(variation)
-        elif line[:3] == 'jmp':
-            variation = deepcopy(lines)
-            variation[i] = line.replace('jmp', 'nop')
-            variations.append(variation)
-    return variations
+    return nums[lastIndex]
 
 def main(input, isTest):
     with open(input) as f:
         lines = f.readlines()
 
-    variations = getAllVariations(lines)
-    for variation in variations:
-        visited = set()
-        currLine = 0
-        accumulator = 0
-        foundError = False
-        while not currLine in visited:
-            if currLine == len(variation):
-                foundError = True
+    lines = [int(i) for i in lines]
+    preambleLen = 5 if isTest else 25
+    invalidNum = findInvalidNum(lines, preambleLen)
+    
+    found = False
+    for i, num in enumerate(lines):  
+        numsSoFar = {num}
+        sumSoFar = num 
+        offset = 1
+        while sumSoFar < invalidNum:
+            numsSoFar.add(lines[i+offset])
+            sumSoFar += lines[i+offset]
+            offset += 1
+            if sumSoFar == invalidNum:
+                found = True
                 break
-            visited.add(currLine)
-            if variation[currLine][:3] == 'nop':
-                currLine += 1
-            elif variation[currLine][:3] == 'acc':
-                accumulator += getInstructionValue(variation[currLine])
-                currLine += 1
-            elif variation[currLine][:3] == 'jmp':
-                currLine += getInstructionValue(variation[currLine])
-            else:
-                raise Exception('Unexpected item in bagging area')
-        if foundError:
-            print(accumulator)
+        if found:
             break
+    
+    print(min(numsSoFar) + max(numsSoFar))
+   
     

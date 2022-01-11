@@ -21,6 +21,6 @@ else:
     input = str(pathlib.Path(__file__).parent.absolute()) + '/test' + str(testNum)
 
 if partNum == 1:
-    part1.main(input, testNum != -1)
+    part1.main(input)
 else:
-    part2.main(input)
+    part2.main(input, testNum != -1)
